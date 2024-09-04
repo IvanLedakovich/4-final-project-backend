@@ -10,11 +10,6 @@ export class UserService {
 		@InjectRepository(User) private readonly userRepository: Repository<User>
 	) {}
 	async createUser(data: CreateUserDto): Promise<User> {
-		// return {
-		// 	email: data.email,
-		// 	password: data.password,
-		// 	id: 0
-		// };
 		return this.userRepository.save(data);
 	}
 

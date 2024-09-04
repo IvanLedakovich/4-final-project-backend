@@ -34,7 +34,8 @@ export class AppController {
 
 		const user = await this.userService.createUser({
 			email: dto.email,
-			password: hashedPassword
+			password: hashedPassword,
+			nickname: dto.nickname
 		});
 
 		delete user.password;
@@ -113,15 +114,20 @@ export class AppController {
 		try {
 			const cookie = request.cookies['jwt'];
 
+
 			const data = await this.jwtService.verifyAsync(cookie);
 
+
 			const user = await this.userService.findOne({ id: data['id'] });
+
 
 			const post = await this.appService.createPost({
 				header: dto.header,
 				text: dto.text,
+				imageUrl: dto.imageUrl,
 				authorId: user.id
 			});
+
 
 			return post;
 		} catch (e) {
@@ -152,6 +158,7 @@ export class AppController {
 				id: dto.id,
 				header: dto.header,
 				text: dto.text,
+				imageUrl: dto.imageUrl,
 				authorId: user.id
 			});
 

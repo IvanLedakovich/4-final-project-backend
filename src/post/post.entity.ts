@@ -7,11 +7,17 @@ export class Post {
 	id: number;
 
 	@Column()
-	header: string;
+	imageUrl: string;
 
 	@Column()
+	header: string;
+
+	@Column({nullable: true})
 	text: string;
 
 	@Column()
 	authorId: number;
+
+	@Column({nullable: true})
+	likesQuantity: number;
 }

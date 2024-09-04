@@ -14,9 +14,16 @@ export class User {
 	@Column()
 	nickname: string;
 
-	@Column("int", { array: true })
+	@Column({nullable: true})
+	description: string;
+
+	@Column({nullable: true})
+	imageUrl: string;
+
+	@Column("int", { array: true, nullable: true, })
 	myPosts: number[];
 
-	@Column("int", { array: true })
+	@Column("int", { array: true, nullable: true, })
 	likedPosts: number[];
+
 }
