@@ -19,6 +19,7 @@ import { DeletePostDto } from './post/DeletePostDto';
 import { UpdatePostDto } from './post/UpdatePostDto';
 import { CreateUserDto } from './user/CreateUserDto';
 import { UserService } from './user/user.service';
+import { UpdateUserDto } from './user/UpdateUserDto';
 
 @Controller('api')
 export class AppController {
@@ -41,6 +42,44 @@ export class AppController {
 		delete user.password;
 
 		return user;
+	}
+
+	@Post('update')
+	async update(@Body() dto: UpdateUserDto, @Req() request: Request) {
+		try {
+			const cookie = request.cookies['jwt'];
+
+			const data = await this.jwtService.verifyAsync(cookie);
+
+			const user = await this.userService.findOne({ id: data['id'] });
+
+			if (!user) {
+				throw new BadRequestException();
+			}
+
+		const hashedPassword = await bcrypt.hash(dto.password, 12);
+
+		const updatedUser = await this.userService.updateUser({
+			id: user.id,
+			email: dto.email,
+			password: hashedPassword,
+			nickname: dto.nickname,
+			description: dto.description,
+			imageUrl: dto.imageUrl,
+			myPosts: user.myPosts,
+			likedPosts: user.likedPosts
+		});
+
+		delete updatedUser.password;
+
+		return updatedUser;
+
+		} catch (e) {
+			console.log(e)
+			return {
+				message: e.message
+			};
+		}
 	}
 
 	@Post('login')
