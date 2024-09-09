@@ -18,8 +18,8 @@ import { CreatePostDto } from './post/CreatePostDto';
 import { DeletePostDto } from './post/DeletePostDto';
 import { UpdatePostDto } from './post/UpdatePostDto';
 import { CreateUserDto } from './user/CreateUserDto';
-import { UserService } from './user/user.service';
 import { UpdateUserDto } from './user/UpdateUserDto';
+import { UserService } from './user/user.service';
 
 @Controller('api')
 export class AppController {
@@ -57,25 +57,24 @@ export class AppController {
 				throw new BadRequestException();
 			}
 
-		const hashedPassword = await bcrypt.hash(dto.password, 12);
+			const hashedPassword = await bcrypt.hash(dto.password, 12);
 
-		const updatedUser = await this.userService.updateUser({
-			id: user.id,
-			email: dto.email,
-			password: hashedPassword,
-			nickname: dto.nickname,
-			description: dto.description,
-			imageUrl: dto.imageUrl,
-			myPosts: user.myPosts,
-			likedPosts: user.likedPosts
-		});
+			const updatedUser = await this.userService.updateUser({
+				id: user.id,
+				email: dto.email,
+				password: hashedPassword,
+				nickname: dto.nickname,
+				description: dto.description,
+				imageUrl: dto.imageUrl,
+				myPosts: dto.myPosts,
+				likedPosts: dto.likedPosts
+			});
 
-		delete updatedUser.password;
+			delete updatedUser.password;
 
-		return updatedUser;
-
+			return updatedUser;
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 			return {
 				message: e.message
 			};
@@ -102,9 +101,9 @@ export class AppController {
 
 		response.cookie('jwt', jwt, { httpOnly: true });
 
-		return {
-			message: 'success'
-		};
+		user.password = password;
+
+		return user;
 	}
 
 	@Get('user')
@@ -153,12 +152,9 @@ export class AppController {
 		try {
 			const cookie = request.cookies['jwt'];
 
-
 			const data = await this.jwtService.verifyAsync(cookie);
 
-
 			const user = await this.userService.findOne({ id: data['id'] });
-
 
 			const post = await this.appService.createPost({
 				header: dto.header,
@@ -166,7 +162,6 @@ export class AppController {
 				imageUrl: dto.imageUrl,
 				authorId: user.id
 			});
-
 
 			return post;
 		} catch (e) {
