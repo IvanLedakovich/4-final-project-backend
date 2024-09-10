@@ -11,4 +11,8 @@ export class CreateUserDto {
 
 	@IsNotEmpty()
 	nickname: string;
+
+	myPosts: any;
+
+	likedPosts: any;
 }

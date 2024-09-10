@@ -1,17 +1,13 @@
-import { IsEmail, IsInt, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty } from 'class-validator';
 
 export class UpdateUserDto {
 	@IsInt()
 	@IsNotEmpty()
-	id: number
+	id: number;
 
 	@IsEmail()
 	@IsNotEmpty()
 	email: string;
-
-	@IsNotEmpty()
-	@MinLength(6)
-	password: string;
 
 	@IsNotEmpty()
 	nickname: string;
@@ -20,7 +16,7 @@ export class UpdateUserDto {
 
 	imageUrl: string;
 
-	myPosts: number[]
+	myPosts: number[];
 
-	likedPosts: number[]
+	likedPosts: number[];
 }
