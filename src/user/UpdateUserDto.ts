@@ -9,6 +9,8 @@ export class UpdateUserDto {
 	@IsNotEmpty()
 	email: string;
 
+	password: string;
+
 	@IsNotEmpty()
 	nickname: string;
 

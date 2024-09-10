@@ -59,14 +59,14 @@ export class AppController {
 				throw new BadRequestException();
 			}
 
-			// const hashedPassword = await bcrypt.hash(dto.password, 12);
+			const hashedPassword = await bcrypt.hash(dto.password, 12);
 
 			console.log(dto.likedPosts);
 
 			const updatedUser = await this.userService.updateUser({
 				id: user.id,
 				email: dto.email,
-				// password: hashedPassword,
+				password: hashedPassword,
 				nickname: dto.nickname,
 				description: dto.description,
 				imageUrl: dto.imageUrl,
@@ -74,7 +74,7 @@ export class AppController {
 				likedPosts: dto.likedPosts
 			});
 
-			delete updatedUser.password;
+			// delete updatedUser.password;
 
 			return updatedUser;
 		} catch (e) {
