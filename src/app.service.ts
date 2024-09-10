@@ -25,6 +25,10 @@ export class AppService {
 		this.postRepository.save(data);
 	}
 
+	async likePost(data: any) {
+		this.postRepository.save(data);
+	}
+
 	async deletePost(data: any) {
 		this.postRepository.delete(data);
 	}

@@ -23,7 +23,10 @@ describe('AppController', () => {
 			const password = 'unitTest';
 			appController.register({
 				email: email,
-				password: password
+				password: password,
+				nickname: '',
+				myPosts: undefined,
+				likedPosts: undefined
 			});
 
 			expect(spyService.createUser).toHaveBeenCalled();

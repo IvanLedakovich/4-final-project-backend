@@ -61,8 +61,6 @@ export class AppController {
 
 			const hashedPassword = await bcrypt.hash(dto.password, 12);
 
-			console.log(dto.likedPosts);
-
 			const updatedUser = await this.userService.updateUser({
 				id: user.id,
 				email: dto.email,
@@ -78,7 +76,6 @@ export class AppController {
 
 			return updatedUser;
 		} catch (e) {
-			console.log(e);
 			return {
 				message: e.message
 			};
@@ -198,6 +195,32 @@ export class AppController {
 				text: dto.text,
 				imageUrl: dto.imageUrl,
 				authorId: user.id
+			});
+
+			return updatedPost;
+		} catch (e) {
+			return {
+				message: e.message
+			};
+		}
+	}
+
+	@Put('posts/like')
+	async likePost(@Body() postId: number, value: number) {
+		try {
+			const post = await this.appService.getPostById({ id: postId });
+
+			if (!post) {
+				throw new BadRequestException();
+			}
+
+			const updatedPost = await this.appService.updatePost({
+				id: post.id,
+				header: post.header,
+				text: post.text,
+				imageUrl: post.imageUrl,
+				authorId: post.authorId,
+				likesQuantity: post.likesQuantity ? post.likesQuantity + value : value
 			});
 
 			return updatedPost;
