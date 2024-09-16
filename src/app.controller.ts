@@ -76,7 +76,7 @@ export class AppController {
 				likedPosts: user.likedPosts
 			});
 
-			// delete updatedUser.password;
+			delete updatedUser.password;
 
 			return updatedUser;
 		} catch (e) {
@@ -212,7 +212,7 @@ export class AppController {
 	}
 
 	@Put('posts/like')
-	async likePost(@Body() postId, value) {
+	async likePost(@Body('postId') postId: number, @Body('value') value: number) {
 		try {
 			let post = await this.appService.getPostById({ id: postId });
 
@@ -224,7 +224,7 @@ export class AppController {
 				post.likesQuantity ? post.likesQuantity + value : value
 			);
 
-			await this.appService.updatePost(post);
+			await this.appService.likePost(post);
 
 			return post;
 		} catch (e) {
