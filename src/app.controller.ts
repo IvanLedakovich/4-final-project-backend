@@ -59,7 +59,11 @@ export class AppController {
 				throw new BadRequestException();
 			}
 
-			const hashedPassword = await bcrypt.hash(dto.password, 12);
+			const hashedPassword = dto.password
+				? await bcrypt.hash(dto.password, 12)
+				: user.password;
+
+			await bcrypt.hash(dto.password, 12);
 
 			const updatedUser = await this.userService.updateUser({
 				id: user.id,
@@ -68,8 +72,8 @@ export class AppController {
 				nickname: dto.nickname,
 				description: dto.description,
 				imageUrl: dto.imageUrl,
-				myPosts: dto.myPosts,
-				likedPosts: dto.likedPosts
+				myPosts: user.myPosts,
+				likedPosts: user.likedPosts
 			});
 
 			// delete updatedUser.password;
@@ -103,6 +107,8 @@ export class AppController {
 		response.cookie('jwt', jwt, { httpOnly: true });
 
 		user.password = password;
+
+		delete user.password;
 
 		return user;
 	}
@@ -206,24 +212,21 @@ export class AppController {
 	}
 
 	@Put('posts/like')
-	async likePost(@Body() postId: number, value: number) {
+	async likePost(@Body() postId, value) {
 		try {
-			const post = await this.appService.getPostById({ id: postId });
+			let post = await this.appService.getPostById({ id: postId });
 
 			if (!post) {
 				throw new BadRequestException();
 			}
 
-			const updatedPost = await this.appService.updatePost({
-				id: post.id,
-				header: post.header,
-				text: post.text,
-				imageUrl: post.imageUrl,
-				authorId: post.authorId,
-				likesQuantity: post.likesQuantity ? post.likesQuantity + value : value
-			});
+			post.likesQuantity = Number(
+				post.likesQuantity ? post.likesQuantity + value : value
+			);
 
-			return updatedPost;
+			await this.appService.updatePost(post);
+
+			return post;
 		} catch (e) {
 			return {
 				message: e.message

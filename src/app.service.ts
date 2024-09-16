@@ -21,12 +21,12 @@ export class AppService {
 		return this.postRepository.save(data);
 	}
 
-	async updatePost(data: any) {
-		this.postRepository.save(data);
+	async updatePost(data: any): Promise<Post> {
+		return this.postRepository.save(data);
 	}
 
-	async likePost(data: any) {
-		this.postRepository.save(data);
+	async likePost(data: any): Promise<Post> {
+		return this.postRepository.save(data);
 	}
 
 	async deletePost(data: any) {
