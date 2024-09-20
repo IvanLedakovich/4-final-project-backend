@@ -166,7 +166,7 @@ export class AppController {
 			const post = await this.appService.createPost({
 				header: dto.header,
 				text: dto.text,
-				imageUrl: dto.imageUrl,
+				imageFile: dto.imageFile,
 				authorId: user.id
 			});
 
@@ -199,7 +199,7 @@ export class AppController {
 				id: dto.id,
 				header: dto.header,
 				text: dto.text,
-				imageUrl: dto.imageUrl,
+				imageFile: dto.imageFile,
 				authorId: user.id
 			});
 

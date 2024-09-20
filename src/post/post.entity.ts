@@ -1,4 +1,3 @@
-import { IsInt } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('posts')
@@ -6,18 +5,18 @@ export class Post {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	imageUrl: string;
+	@Column({ nullable: true, type: 'bytea' })
+	imageFile: Buffer;
 
 	@Column()
 	header: string;
 
-	@Column({nullable: true})
+	@Column({ nullable: true })
 	text: string;
 
 	@Column()
 	authorId: number;
 
-	@Column({nullable: true})
+	@Column({ nullable: true })
 	likesQuantity: number;
 }

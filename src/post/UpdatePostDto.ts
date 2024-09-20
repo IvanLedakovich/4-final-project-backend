@@ -6,7 +6,7 @@ export class UpdatePostDto {
 	id: number;
 
 	@IsNotEmpty()
-	imageUrl: string;
+	imageFile: Buffer;
 
 	@IsNotEmpty()
 	header: string;
