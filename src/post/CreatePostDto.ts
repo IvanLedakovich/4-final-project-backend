@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreatePostDto {
 	@IsNotEmpty()
-	imageFile: Buffer;
+	imageUrl: string;
 
 	@IsNotEmpty()
 	header: string;
