@@ -53,7 +53,7 @@ export class AppController {
 
 			const data = await this.jwtService.verifyAsync(cookie);
 
-			const user = await this.userService.findOne({ id: data['id'] });
+			const user = await this.userService.findOne({ id: data.id });
 
 			if (!user) {
 				throw new BadRequestException();
@@ -124,7 +124,7 @@ export class AppController {
 				throw new UnauthorizedException();
 			}
 
-			const user = await this.userService.findOne({ id: data['id'] });
+			const user = await this.userService.findOne({ id: data.id });
 
 			const { password, ...result } = user;
 
@@ -161,7 +161,7 @@ export class AppController {
 
 			const data = await this.jwtService.verifyAsync(cookie);
 
-			const user = await this.userService.findOne({ id: data['id'] });
+			const user = await this.userService.findOne({ id: data.id });
 
 			const post = await this.appService.createPost({
 				header: dto.header,
@@ -183,7 +183,7 @@ export class AppController {
 
 			const data = await this.jwtService.verifyAsync(cookie);
 
-			const user = await this.userService.findOne({ id: data['id'] });
+			const user = await this.userService.findOne({ id: data.id });
 
 			const post = await this.appService.getPostById({ id: dto.id });
 
@@ -241,7 +241,7 @@ export class AppController {
 
 			const data = await this.jwtService.verifyAsync(cookie);
 
-			const user = await this.userService.findOne({ id: data['id'] });
+			const user = await this.userService.findOne({ id: data.id });
 
 			const post = await this.appService.getPostById({ id: dto.id });
 

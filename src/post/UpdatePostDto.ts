@@ -12,6 +12,4 @@ export class UpdatePostDto {
 	header: string;
 
 	text: string;
-
-	likesQuantity: number;
 }

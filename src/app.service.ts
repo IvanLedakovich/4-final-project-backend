@@ -10,7 +10,7 @@ export class AppService {
 	) {}
 
 	async getAllPosts(): Promise<Post[]> {
-		return this.postRepository.find({ where: [null] });
+		return this.postRepository.find({});
 	}
 
 	async getPostById(condition: any): Promise<Post> {
