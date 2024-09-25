@@ -1,43 +1,76 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Post } from './post/post.entity';
+import { User } from './user/user.entity';
 import { UserService } from './user/user.service';
 
 describe('AppController', () => {
 	let appController: AppController;
-	let spyService: UserService;
+	let appService: AppService;
+	let userService: UserService;
+	let jwtService: JwtService;
 
 	beforeEach(async () => {
-		const app: TestingModule = await Test.createTestingModule({
+		const module: TestingModule = await Test.createTestingModule({
 			controllers: [AppController],
-			providers: [AppService, UserService]
+			providers: [
+				AppService,
+				UserService,
+				JwtService,
+				{
+					provide: getRepositoryToken(Post),
+					useValue: {
+						find: jest.fn(),
+						findOne: jest.fn(),
+						save: jest.fn(),
+						delete: jest.fn()
+					}
+				},
+				{
+					provide: getRepositoryToken(User),
+					useValue: {
+						save: jest.fn(),
+						findOne: jest.fn()
+					}
+				}
+			]
 		}).compile();
 
-		appController = app.get<AppController>(AppController);
-		spyService = app.get<UserService>(UserService);
+		appController = module.get<AppController>(AppController);
+		appService = module.get<AppService>(AppService);
+		userService = module.get<UserService>(UserService);
+		jwtService = module.get<JwtService>(JwtService);
 	});
 
-	describe('createUser', () => {
-		it('should call createUser', async () => {
-			const email = 'unitTest@gmail.com';
-			const password = 'unitTest';
-			appController.register({
-				email: email,
-				password: password,
-				nickname: '',
-				myPosts: undefined,
-				likedPosts: undefined
-			});
+	it('ApiService - should be defined', () => {
+		expect(appService).toBeDefined();
+	});
 
-			expect(spyService.createUser).toHaveBeenCalled();
+	it('should call createUser', async () => {
+		const spy = jest.spyOn(userService, 'createUser').mockImplementation(() =>
+			Promise.resolve({
+				id: 1,
+				email: 'unitTest@gmail.com',
+				password: 'unitTest',
+				imageUrl: 'unitTest',
+				nickname: 'unitTest',
+				description: 'unitTest',
+				myPosts: [],
+				likedPosts: []
+			})
+		);
+
+		await appController.register({
+			email: 'unitTest@gmail.com',
+			password: 'unitTest',
+			nickname: 'unitTest',
+			myPosts: [],
+			likedPosts: []
 		});
-	});
 
-	// describe('getGPA', () => {
-	// 	it('should retrieve getGPA for a student', async () => {
-	// 		const firstName = 'Joe';
-	// 		const secondName = 'Foo';
-	// 		expect(spyService.getGpa(firstName, secondName)).toBe(4.5);
-	// 	});
-	// });
+		expect(spy).toHaveBeenCalled();
+	});
 });
