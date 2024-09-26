@@ -5,8 +5,11 @@ export class Post {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	imageUrl: string;
+	@Column({
+		type: 'bytea',
+		nullable: true
+	})
+	image: Uint8Array;
 
 	@Column()
 	header: string;

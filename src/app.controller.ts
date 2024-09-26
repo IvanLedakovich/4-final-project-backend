@@ -4,13 +4,18 @@ import {
 	Controller,
 	Delete,
 	Get,
+	HttpStatus,
+	ParseFilePipeBuilder,
 	Post,
 	Put,
 	Req,
 	Res,
-	UnauthorizedException
+	UnauthorizedException,
+	UploadedFile,
+	UseInterceptors
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { AppService } from './app.service';
@@ -20,6 +25,10 @@ import { UpdatePostDto } from './post/UpdatePostDto';
 import { CreateUserDto } from './user/CreateUserDto';
 import { UpdateUserDto } from './user/UpdateUserDto';
 import { UserService } from './user/user.service';
+
+MulterModule.register({
+	dest: './upload'
+});
 
 @Controller('api')
 export class AppController {
@@ -155,25 +164,41 @@ export class AppController {
 	}
 
 	@Post('posts/create')
-	async createPost(@Body() dto: CreatePostDto, @Req() request: Request) {
-		try {
-			const cookie = request.cookies['jwt'];
+	@UseInterceptors(FileInterceptor('file'))
+	async createPost(
+		@Body() dto: CreatePostDto,
+		@Req() request: Request,
+		@UploadedFile(
+			new ParseFilePipeBuilder()
+				.addFileTypeValidator({
+					fileType: 'jpeg'
+				})
+				.addMaxSizeValidator({
+					maxSize: 100000
+				})
+				.build({
+					errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+				})
+		)
+		file: Express.Multer.File
+	) {
+		const cookie = request.cookies['jwt'];
 
-			const data = await this.jwtService.verifyAsync(cookie);
+		const data = await this.jwtService.verifyAsync(cookie);
 
-			const user = await this.userService.findOne({ id: data.id });
+		const user = await this.userService.findOne({ id: data.id });
 
-			const post = await this.appService.createPost({
-				header: dto.header,
-				text: dto.text,
-				imageUrl: dto.imageUrl,
-				authorId: user.id
-			});
+		const post = await this.appService.createPost({
+			header: dto.header,
+			text: dto.text,
+			image: file.buffer,
+			authorId: user.id
+		});
 
-			return post;
-		} catch (e) {
-			throw new UnauthorizedException();
-		}
+		return post;
+	}
+	catch(e) {
+		throw new UnauthorizedException();
 	}
 
 	@Put('posts/update')

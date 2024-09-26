@@ -16,7 +16,6 @@ import { UserService } from './user/user.service';
 		TypeOrmModule.forRoot({
 			type: 'postgres',
 			url: process.env.DATABASE_URL,
-			// autoLoadEntities: true,
 			host: 'localhost',
 			port: Number(process.env.DATABASE_PORT),
 			username: process.env.DATABASE_USERNAME,

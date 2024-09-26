@@ -6,7 +6,8 @@ import { Post } from './post/post.entity';
 @Injectable()
 export class AppService {
 	constructor(
-		@InjectRepository(Post) private readonly postRepository: Repository<Post>
+		@InjectRepository(Post)
+		private readonly postRepository: Repository<Post>
 	) {}
 
 	async getAllPosts(): Promise<Post[]> {
